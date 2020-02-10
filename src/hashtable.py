@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -51,8 +52,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        new_ht_key = self._hash_mod(key)
+        # check to see if key exists already
+        if self.storage[new_ht_key] is not None:
+            print('error: key already exists')
+            return
+        self.storage[new_ht_key] = LinkedPair(key, value)
+        self.count += 1
 
 
     def remove(self, key):
@@ -63,7 +69,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        new_ht_key = self._hash_mod(key)
+        if not self.storage[new_ht_key]:
+            print('error: key not found')
+            return
+        self.storage[new_ht_key] = None
+        self.count -= 1
 
 
     def retrieve(self, key):
@@ -74,7 +85,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # use _hash_mod to return a value within the capacity of the ht
+        new_key = self._hash_mod(key)
+        if not self.storage[new_key]:
+            print('error: key not found')
+            return None
+        return self.storage[new_key]
 
 
     def resize(self):
@@ -84,34 +100,45 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_ht_key = [None] * self.capacity
+        # for i in range(self.storage):
+        #     new_ht_key[i] = self.storage[i]
+        # self.storage = new_ht_key
+        for i in range(len(self.storage)):
+            if self.storage[i] is not None:
+                new_ht_key[i] = self.storage[i]
+            self.storage = new_ht_key
 
+ht = HashTable(4)
+print(ht.insert("line_1", "Tiny hash table"))
+print(ht.insert("line_2", "Filled beyond capacity"))
+print(ht.insert("line_3", "Linked list saves the day!"))
 
+# if __name__ == "__main__":
+#     ht = HashTable(2)
 
-if __name__ == "__main__":
-    ht = HashTable(2)
+#     ht.insert("line_1", "Tiny hash table")
+#     ht.insert("line_2", "Filled beyond capacity")
+#     ht.insert("line_3", "Linked list saves the day!")
 
-    ht.insert("line_1", "Tiny hash table")
-    ht.insert("line_2", "Filled beyond capacity")
-    ht.insert("line_3", "Linked list saves the day!")
+#     print("")
 
-    print("")
+#     # Test storing beyond capacity
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     # Test resizing
+#     old_capacity = len(ht.storage)
+#     ht.resize()
+#     new_capacity = len(ht.storage)
 
-    # Test resizing
-    old_capacity = len(ht.storage)
-    ht.resize()
-    new_capacity = len(ht.storage)
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     # Test if data intact after resizing
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    # Test if data intact after resizing
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
-
-    print("")
+#     print("")
